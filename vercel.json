@@ -1,0 +1,15 @@
+{
+  "name": "Racespot.tv Website Mockup",
+  "version": 2,
+  "public": true,
+  "buildCommand": "echo 'Static site - no build needed'",
+  "outputDirectory": ".",
+  "regions": ["fra1"],
+  "env": {},
+  "rewrites": [
+    {
+      "source": "/:path((?!.*\\.).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

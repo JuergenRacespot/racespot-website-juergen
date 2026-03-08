@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Racespot.tv — World's Leading Simracing Broadcast Studio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --yellow: #F5C000;
+    --yellow-dark: #D4A800;
+    --black: #0A0A0A;
+    --s1: #111111;
+    --s2: #1A1A1A;
+    --s3: #242424;
+    --border: #2A2A2A;
+    --muted: #777777;
+    --white: #FFFFFF;
+    --live: #E53E3E;
+    --font-display: 'Oswald', 'Arial Black', sans-serif;
+    --font-body: 'Inter', Arial, sans-serif;
+    --transition: all 220ms cubic-bezier(0.4,0,0.2,1);
+    --container: 1280px;
+    --radius: 6px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: var(--font-body); font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+
+  /* ── UTILS ─────────────────────────────────── */
+  .container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+  .section { padding: 80px 0; }
+  .section--alt { background: var(--s1); }
+  .section--yellow { background: var(--yellow); }
+  .hidden { display: none !important; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── TYPOGRAPHY ─────────────────────────────── */
+  .label { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--yellow); }
+  .section-title { font-family: var(--font-display); font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; color: var(--white); }
+  .section-title--black { color: var(--black); }
+  .display-title { font-family: var(--font-display); font-weight: 900; text-transform: uppercase; letter-spacing: -0.04em; line-height: 0.95; color: var(--white); }
+
+  /* ── BUTTONS ─────────────────────────────────── */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; border-radius: var(--radius); transition: var(--transition); }
+  .btn-primary { background: var(--yellow); color: var(--black); }
+  .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,192,0,0.3); }
+  .btn-outline { background: transparent; color: var(--yellow); border: 2px solid var(--yellow); }
+  .btn-outline:hover { background: rgba(245,192,0,0.1); }
+  .btn-ghost { background: transparent; color: var(--muted); border: none; padding: 10px 0; }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-sm { padding: 9px 18px; font-size: 11px; }
+
+  /* ── BADGES ──────────────────────────────────── */
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .badge-live { background: var(--live); color: white; }
+  .badge-live::before { content: ''; width: 7px; height: 7px; background: white; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+  .badge-upcoming { background: transparent; color: var(--yellow); border: 1px solid var(--yellow); }
+  .badge-category { background: rgba(245,192,0,0.12); color: var(--yellow); }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.2)} }
+
+  /* ── NAV ─────────────────────────────────────── */
+  #nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 64px; display: flex; align-items: center; background: rgba(10,10,10,0.97); border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); transition: var(--transition); }
+  .nav-inner { display: flex; align-items: center; width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 24px; gap: 40px; }
+  .nav-logo { font-family: var(--font-display); font-size: 22px; font-weight: 900; letter-spacing: -0.02em; color: var(--white); text-decoration: none; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+  .nav-logo span { color: var(--yellow); }
+  .nav-links { display: flex; align-items: center; gap: 4px; flex: 1; }
+  .nav-link { font-family: var(--font-display); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: var(--transition); position: relative; border: none; background: none; }
+  .nav-link:hover { color: var(--white); }
+  .nav-link.active { color: var(--white); }
+  .nav-link.active::after { content: ''; position: absolute; bottom: -4px; left: 12px; right: 12px; height: 2px; background: var(--yellow); border-radius: 2px; }
+  .nav-link.live-link { color: var(--live); }
+  .nav-link.live-link::before { content: '●'; margin-right: 5px; animation: pulse 1.5s infinite; }
+  .nav-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .lang-toggle { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .lang-btn { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 6px 10px; background: none; border: none; color: var(--muted); cursor: pointer; transition: var(--transition); }
+  .lang-btn.active { background: var(--yellow); color: var(--black); }
+
+  /* ── TICKER ──────────────────────────────────── */
+  #ticker { background: var(--yellow); height: 34px; overflow: hidden; display: flex; align-items: center; margin-top: 64px; }
+  .ticker-label { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--black); padding: 0 16px; background: var(--black); color: var(--yellow); height: 100%; display: flex; align-items: center; flex-shrink: 0; }
+  .ticker-scroll { display: flex; align-items: center; gap: 0; animation: ticker 35s linear infinite; white-space: nowrap; }
+  .ticker-item { font-family: var(--font-display); font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--black); padding: 0 24px; text-transform: uppercase; }
+  .ticker-dot { color: rgba(10,10,10,0.4); font-size: 8px; }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── HERO HOME ───────────────────────────────── */
+  .hero { position: relative; height: calc(100vh - 98px); min-height: 560px; max-height: 860px; display: flex; align-items: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #1a1a2e 100%); }
+  .hero-bg-grid { position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(245,192,0,0.03) 60px, rgba(245,192,0,0.03) 61px), repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(245,192,0,0.03) 60px, rgba(245,192,0,0.03) 61px); }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(10,10,10,0.97) 35%, rgba(10,10,10,0.75) 60%, rgba(10,10,10,0.3) 100%); }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .hero-title { font-size: clamp(44px, 7vw, 80px); margin-bottom: 20px; }
+  .hero-title em { font-style: normal; color: var(--yellow); }
+  .hero-sub { font-size: 16px; color: rgba(255,255,255,0.65); margin-bottom: 12px; line-height: 1.5; }
+  .hero-meta { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 36px; }
+  .hero-meta span { color: var(--yellow); }
+  .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero-visual { position: absolute; right: 0; top: 0; bottom: 0; width: 55%; background: linear-gradient(135deg, #0f3460 0%, #533483 50%, #e94560 100%); opacity: 0.15; }
+  .hero-stripes { position: absolute; right: 10%; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; opacity: 0.08; }
+  .hero-stripe { width: 4px; background: var(--yellow); border-radius: 2px; }
+
+  /* ── STATS BAR ───────────────────────────────── */
+  .stats-bar { background: var(--yellow); padding: 48px 0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .stat-item { text-align: center; padding: 8px 16px; border-right: 1px solid rgba(10,10,10,0.15); }
+  .stat-item:last-child { border-right: none; }
+  .stat-number { font-family: var(--font-display); font-size: clamp(36px, 4.5vw, 56px); font-weight: 900; color: var(--black); letter-spacing: -0.04em; line-height: 1; }
+  .stat-label { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(10,10,10,0.6); margin-top: 6px; }
+
+  /* ── SECTION HEADERS ─────────────────────────── */
+  .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 36px; }
+  .section-header-left .label { margin-bottom: 8px; }
+
+  /* ── CARDS ───────────────────────────────────── */
+  .card-grid { display: grid; gap: 20px; }
+  .card-grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .card-grid--4 { grid-template-columns: repeat(4, 1fr); }
+  .card-grid--2 { grid-template-columns: repeat(2, 1fr); }
+
+  .broadcast-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: var(--transition); }
+  .broadcast-card:hover { border-color: var(--yellow); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(245,192,0,0.15); }
+  .thumb { position: relative; aspect-ratio: 16/9; background: var(--s2); overflow: hidden; }
+  .thumb-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .thumb-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 60%); }
+  .thumb-badge { position: absolute; top: 10px; left: 10px; }
+  .thumb-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: var(--transition); }
+  .broadcast-card:hover .thumb-play { opacity: 1; }
+  .play-icon { width: 48px; height: 48px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--black); font-size: 18px; }
+  .card-body { padding: 16px; }
+  .card-category { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--yellow); margin-bottom: 6px; }
+  .card-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+  .card-meta { font-size: 12px; color: var(--muted); }
+
+  /* ── EVENT HERO ──────────────────────────────── */
+  .event-hero { background: linear-gradient(135deg, #0a0a0a 0%, #1a0a00 50%, #0a0a0a 100%); border: 1px solid var(--border); border-radius: 8px; padding: 48px; margin-bottom: 0; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+  .event-hero-title { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; color: var(--white); margin-bottom: 8px; }
+  .event-hero-title em { color: var(--yellow); font-style: normal; }
+  .event-hero-sub { font-size: 15px; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
+  .event-hero-meta { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 28px; }
+  .countdown { display: flex; gap: 16px; }
+  .countdown-unit { text-align: center; background: var(--s2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; min-width: 72px; }
+  .countdown-num { font-family: var(--font-display); font-size: 36px; font-weight: 900; color: var(--yellow); line-height: 1; }
+  .countdown-label { font-family: var(--font-display); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+  /* ── SERVICE CARDS ───────────────────────────── */
+  .service-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; transition: var(--transition); border-left: 4px solid transparent; }
+  .service-card:hover { border-left-color: var(--yellow); background: var(--s2); }
+  .service-icon { width: 48px; height: 48px; background: rgba(245,192,0,0.1); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+  .service-card h3 { font-family: var(--font-display); font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 12px; color: var(--white); }
+  .service-card p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 20px; }
+  .service-features { list-style: none; margin-bottom: 28px; }
+  .service-features li { font-size: 13px; color: rgba(255,255,255,0.75); padding: 5px 0; display: flex; align-items: center; gap: 10px; }
+  .service-features li::before { content: ''; width: 6px; height: 6px; background: var(--yellow); border-radius: 50%; flex-shrink: 0; }
+
+  /* ── TEAM CARDS ──────────────────────────────── */
+  .team-card { text-align: center; }
+  .team-photo { width: 120px; height: 120px; border-radius: 50%; background: var(--s2); border: 3px solid var(--border); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 40px; transition: var(--transition); overflow: hidden; }
+  .team-card:hover .team-photo { border-color: var(--yellow); box-shadow: 0 0 0 4px rgba(245,192,0,0.2); }
+  .team-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; text-transform: uppercase; color: var(--white); margin-bottom: 4px; }
+  .team-role { font-size: 13px; color: var(--yellow); font-weight: 600; margin-bottom: 6px; }
+  .team-bio { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── PARTNER LOGOS ───────────────────────────── */
+  .partners { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+  .partner-logo { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); transition: var(--transition); cursor: default; }
+  .partner-logo:hover { color: var(--white); }
+
+  /* ── NEWS CARD ───────────────────────────────── */
+  .news-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: var(--transition); }
+  .news-card:hover { border-color: var(--border); transform: translateY(-2px); }
+  .news-card:hover .news-title { color: var(--yellow); }
+  .news-thumb { aspect-ratio: 16/9; background: var(--s2); display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .news-body { padding: 20px; }
+  .news-category { font-family: var(--font-display); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--yellow); margin-bottom: 8px; }
+  .news-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--white); line-height: 1.3; margin-bottom: 8px; transition: var(--transition); }
+  .news-meta { font-size: 12px; color: var(--muted); }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  .footer { background: var(--s1); border-top: 1px solid var(--border); padding: 64px 0 32px; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+  .footer-brand p { font-size: 14px; color: var(--muted); margin: 12px 0 20px; line-height: 1.6; max-width: 260px; }
+  .footer-col h4 { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); margin-bottom: 16px; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 10px; }
+  .footer-col ul li a { font-size: 13px; color: var(--muted); text-decoration: none; transition: var(--transition); cursor: pointer; }
+  .footer-col ul li a:hover { color: var(--white); }
+  .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-bottom p { font-size: 13px; color: var(--muted); }
+  .social-links { display: flex; gap: 16px; }
+  .social-link { width: 36px; height: 36px; background: var(--s2); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px; text-decoration: none; color: var(--muted); transition: var(--transition); cursor: pointer; }
+  .social-link:hover { border-color: var(--yellow); color: var(--yellow); }
+
+  /* ── PAGE: BROADCASTS ────────────────────────── */
+  .page-hero { background: var(--s1); padding: 80px 0 60px; border-bottom: 1px solid var(--border); }
+  .page-hero-eyebrow { margin-bottom: 12px; }
+  .page-hero h1 { font-family: var(--font-display); font-size: clamp(36px, 5vw, 60px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.04em; color: var(--white); margin-bottom: 16px; }
+  .page-hero p { font-size: 17px; color: rgba(255,255,255,0.6); max-width: 640px; }
+
+  .filter-bar { background: var(--s2); border-bottom: 1px solid var(--border); padding: 0; }
+  .filter-inner { display: flex; align-items: center; gap: 4px; padding: 0 24px; max-width: var(--container); margin: 0 auto; overflow-x: auto; }
+  .filter-btn { font-family: var(--font-display); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 16px; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+  .filter-btn:hover { color: var(--white); }
+  .filter-btn.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+
+  /* ── FEATURED BROADCAST ──────────────────────── */
+  .featured-broadcast { background: var(--s1); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: grid; grid-template-columns: 1fr 400px; margin-bottom: 40px; }
+  .featured-thumb { aspect-ratio: 16/9; background: linear-gradient(135deg, #1a1a3e, #4a1a4e); display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
+  .featured-content { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+  .featured-content .label { margin-bottom: 12px; }
+  .featured-content h2 { font-family: var(--font-display); font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.03em; margin-bottom: 10px; }
+  .featured-content p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 24px; }
+  .featured-meta { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .featured-meta span { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+  /* ── TESTIMONIAL ─────────────────────────────── */
+  .testimonial { background: var(--s1); border: 1px solid var(--border); border-left: 4px solid var(--yellow); border-radius: var(--radius); padding: 36px 40px; }
+  .testimonial blockquote { font-size: 18px; font-style: italic; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 20px; }
+  .testimonial-author { display: flex; align-items: center; gap: 16px; }
+  .testimonial-avatar { width: 48px; height: 48px; background: var(--s2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .testimonial-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--white); }
+  .testimonial-title { font-size: 12px; color: var(--muted); }
+
+  /* ── PAGE: EVENTS ────────────────────────────── */
+  .event-list-item { display: grid; grid-template-columns: 80px 1fr auto; gap: 24px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .event-date-box { background: var(--s2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
+  .event-date-day { font-family: var(--font-display); font-size: 28px; font-weight: 900; color: var(--yellow); line-height: 1; }
+  .event-date-month { font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .event-info h3 { font-family: var(--font-display); font-size: 17px; font-weight: 700; text-transform: uppercase; color: var(--white); margin-bottom: 4px; }
+  .event-info p { font-size: 13px; color: var(--muted); }
+
+  /* ── PAGE: SERVICES ──────────────────────────── */
+  .services-feature { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 64px 0; border-bottom: 1px solid var(--border); }
+  .services-feature:last-of-type { border-bottom: none; }
+  .services-feature.reverse { direction: rtl; }
+  .services-feature.reverse > * { direction: ltr; }
+  .services-feature-visual { background: var(--s1); border: 1px solid var(--border); border-radius: 8px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 64px; }
+  .services-feature-content .label { margin-bottom: 12px; }
+  .services-feature-content h2 { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 42px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; color: var(--white); margin-bottom: 16px; }
+  .services-feature-content p { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 24px; }
+  .check-list { list-style: none; margin-bottom: 32px; }
+  .check-list li { font-size: 14px; color: rgba(255,255,255,0.8); padding: 6px 0; display: flex; align-items: center; gap: 12px; }
+  .check-list li::before { content: '✓'; color: var(--yellow); font-weight: 800; font-size: 13px; }
+
+  /* ── PAGE: CALENDAR ──────────────────────────── */
+  .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: gap; gap: 16px; }
+  .cal-nav { display: flex; align-items: center; gap: 16px; }
+  .cal-nav-btn { width: 36px; height: 36px; background: var(--s2); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--white); transition: var(--transition); }
+  .cal-nav-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+  .cal-month { font-family: var(--font-display); font-size: 22px; font-weight: 700; text-transform: uppercase; color: var(--white); }
+  .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .view-btn { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 14px; background: none; border: none; color: var(--muted); cursor: pointer; transition: var(--transition); }
+  .view-btn.active { background: var(--yellow); color: var(--black); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .cal-day-header { background: var(--s2); padding: 10px; text-align: center; font-family: var(--font-display); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .cal-cell { background: var(--s1); padding: 10px; min-height: 90px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .cal-cell:nth-child(7n) { border-right: none; }
+  .cal-cell--today { background: rgba(245,192,0,0.05); box-shadow: inset 0 0 0 2px var(--yellow); }
+  .cal-cell--empty { background: var(--black); }
+  .cal-num { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+  .cal-cell--today .cal-num { color: var(--yellow); }
+  .cal-event { font-size: 10px; background: rgba(245,192,0,0.15); color: var(--yellow); border-radius: 3px; padding: 2px 6px; margin-bottom: 3px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-display); font-weight: 600; letter-spacing: 0.04em; }
+  .cal-event.live { background: rgba(229,62,62,0.2); color: var(--live); }
+
+  /* ── PAGE: LIVE ──────────────────────────────── */
+  .live-player { background: var(--black); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+  .live-embed { aspect-ratio: 16/9; background: linear-gradient(135deg, #0d0d1a, #1a0d2e); display: flex; align-items: center; justify-content: center; position: relative; }
+  .live-embed-placeholder { text-align: center; }
+  .live-embed-placeholder h3 { font-family: var(--font-display); font-size: 20px; font-weight: 700; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+  .live-embed-placeholder p { font-size: 14px; color: var(--muted); }
+  .live-info { padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .live-title h2 { font-family: var(--font-display); font-size: 20px; font-weight: 700; text-transform: uppercase; color: var(--white); }
+  .live-title p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .live-actions { display: flex; gap: 12px; }
+  .offline-state { background: var(--s1); border: 1px solid var(--border); border-radius: 8px; padding: 80px 40px; text-align: center; }
+  .offline-state h2 { font-family: var(--font-display); font-size: 28px; font-weight: 700; text-transform: uppercase; color: var(--white); margin: 20px 0 8px; }
+  .offline-state p { font-size: 15px; color: var(--muted); margin-bottom: 28px; }
+  .offline-icon { font-size: 56px; }
+
+  /* ── PAGE: NEWS ──────────────────────────────── */
+  .news-featured { background: var(--s1); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: grid; grid-template-columns: 1fr 420px; margin-bottom: 40px; cursor: pointer; transition: var(--transition); }
+  .news-featured:hover { border-color: rgba(245,192,0,0.4); }
+  .news-featured-thumb { background: linear-gradient(135deg, #1a1a0a, #2a200a); display: flex; align-items: center; justify-content: center; font-size: 56px; aspect-ratio: 16/9; }
+  .news-featured-content { padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+  .news-featured-content .label { margin-bottom: 12px; }
+  .news-featured-content h2 { font-family: var(--font-display); font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.03em; color: var(--white); margin-bottom: 12px; line-height: 1.2; }
+  .news-featured-content p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 20px; }
+  .news-featured-meta { font-size: 12px; color: var(--muted); }
+
+  /* ── CTA SECTION ─────────────────────────────── */
+  .cta-section { background: var(--s1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 0; text-align: center; }
+  .cta-section h2 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.04em; color: var(--white); margin-bottom: 12px; }
+  .cta-section p { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── MODAL ───────────────────────────────────── */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .modal { background: var(--s1); border: 1px solid var(--border); border-radius: 8px; padding: 40px; max-width: 480px; width: 100%; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: var(--s2); border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--muted); transition: var(--transition); }
+  .modal-close:hover { color: var(--white); border-color: var(--white); }
+
+  /* ── QUOTE FORM ──────────────────────────────── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: span 2; }
+  .form-group label { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .form-group input, .form-group select, .form-group textarea { background: var(--s2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; color: var(--white); font-family: var(--font-body); font-size: 14px; transition: var(--transition); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(245,192,0,0.15); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .form-group select option { background: var(--s2); }
+
+  /* ── DIVIDER ─────────────────────────────────── */
+  .yellow-line { height: 2px; background: linear-gradient(to right, transparent, var(--yellow), transparent); margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="showPage('home')">RACE<span>▶</span>SPOT</a>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="showPage('home')" id="nav-home">Home</button>
+      <button class="nav-link" onclick="showPage('broadcasts')" id="nav-broadcasts">Broadcasts</button>
+      <button class="nav-link" onclick="showPage('events')" id="nav-events">Events</button>
+      <button class="nav-link" onclick="showPage('services')" id="nav-services">Services</button>
+      <button class="nav-link" onclick="showPage('calendar')" id="nav-calendar">Calendar</button>
+      <button class="nav-link live-link" onclick="showPage('live')" id="nav-live">Live</button>
+      <button class="nav-link" onclick="showPage('news')" id="nav-news">News</button>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('de')">DE</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="showModal('quote')">Get a Quote</button>
+    </div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div id="ticker">
+  <div class="ticker-label">● LIVE</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="ticker-scroll">
+      <span class="ticker-item">● LIVE: iRacing GT3 World Championship — Round 3 — Monza — 10,243 Watching</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">UPCOMING: NASCAR 25 Oval Series Round 2 — Thu 20 Mar · 18:00 CET</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">RESULTS: Le Mans Virtual 2026 — Racespot Coverage: 2.1M Views</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">RACE WEEK 2026 — 08–12 July · Cologne, Germany — Register Interest Now</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">● LIVE: iRacing GT3 World Championship — Round 3 — Monza — 10,243 Watching</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">UPCOMING: NASCAR 25 Oval Series Round 2 — Thu 20 Mar · 18:00 CET</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">RESULTS: Le Mans Virtual 2026 — Racespot Coverage: 2.1M Views</span>
+      <span class="ticker-dot">◆</span>
+      <span class="ticker-item">RACE WEEK 2026 — 08–12 July · Cologne, Germany — Register Interest Now</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: HOME -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-bg-grid"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-stripes">
+      <div class="hero-stripe" style="height:180px"></div>
+      <div class="hero-stripe" style="height:280px"></div>
+      <div class="hero-stripe" style="height:200px"></div>
+      <div class="hero-stripe" style="height:320px"></div>
+      <div class="hero-stripe" style="height:160px"></div>
+      <div class="hero-stripe" style="height:240px"></div>
+      <div class="hero-stripe" style="height:300px"></div>
+      <div class="hero-stripe" style="height:180px"></div>
+      <div class="hero-stripe" style="height:260px"></div>
+    </div>
+    <div class="container" style="position:relative;z-index:1">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="badge badge-live">Live Now</span>
+          <span style="font-family:var(--font-display);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)">iRacing GT3 · Round 3 · Monza</span>
+        </div>
+        <h1 class="display-title hero-title">The World's<br>Leading<br><em>Simracing</em><br>Broadcast Studio</h1>
+        <p class="hero-sub">Professional broadcast production for the world's biggest simracing events — on TV and online, in 8 languages.</p>
+        <p class="hero-meta"><span>Cologne</span> · Eurosport · Sport 1 · MotorsTV · <span>Global</span></p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="showPage('live')">▶ Watch Live Now</button>
+          <button class="btn btn-outline" onclick="showPage('calendar')">View Schedule</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item"><div class="stat-number">400+</div><div class="stat-label">Broadcasts Per Year</div></div>
+        <div class="stat-item"><div class="stat-number">100M+</div><div class="stat-label">Impressions Per Year</div></div>
+        <div class="stat-item"><div class="stat-number">2.5M+</div><div class="stat-label">YouTube Views</div></div>
+        <div class="stat-item"><div class="stat-number">8</div><div class="stat-label">Languages Covered</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT EVENT -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-header-left">
+          <p class="label">Next Major Event</p>
+          <h2 class="section-title">Race Week 2026</h2>
+        </div>
+      </div>
+      <div class="event-hero">
+        <div>
+          <p class="label" style="margin-bottom:12px">08 – 12 July 2026 · Cologne, Germany</p>
+          <h2 class="event-hero-title">Europe's New Festival of<br><em>Virtual Motorsport</em></h2>
+          <p class="event-hero-sub">Esports competition · Automotive innovation · Live entertainment · Up to 1,500 guests · Global broadcast infrastructure</p>
+          <p class="event-hero-meta">Cologne · Germany · Capacity 1,500 · Global Broadcast</p>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="showModal('quote')">Register Interest</button>
+            <button class="btn btn-outline" onclick="showPage('events')">Partner With Us</button>
+          </div>
+        </div>
+        <div>
+          <p class="label" style="margin-bottom:16px">Countdown</p>
+          <div class="countdown" id="countdown">
+            <div class="countdown-unit"><div class="countdown-num" id="cd-days">122</div><div class="countdown-label">Days</div></div>
+            <div class="countdown-unit"><div class="countdown-num" id="cd-hours">14</div><div class="countdown-label">Hrs</div></div>
+            <div class="countdown-unit"><div class="countdown-num" id="cd-mins">36</div><div class="countdown-label">Min</div></div>
+            <div class="countdown-unit"><div class="countdown-num" id="cd-secs">00</div><div class="countdown-label">Sec</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LATEST BROADCASTS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-header-left">
+          <p class="label">Recent Coverage</p>
+          <h2 class="section-title">Latest Broadcasts</h2>
+        </div>
+        <button class="btn btn-ghost" onclick="showPage('broadcasts')">View All Broadcasts →</button>
+      </div>
+      <div class="card-grid card-grid--3">
+        <div class="broadcast-card">
+          <div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a0a2e,#3a1a5e)"><span style="font-size:36px">🏎</span></div><div class="thumb-overlay"></div><div class="thumb-badge"><span class="badge badge-live">Live</span></div><div class="thumb-play"><div class="play-icon">▶</div></div></div>
+          <div class="card-body"><div class="card-category">iRacing · GT3</div><div class="card-title">iRacing GT3 World Championship — Round 3 — Monza Circuit</div><div class="card-meta">10,243 watching · Mar 2026</div></div>
+        </div>
+        <div class="broadcast-card">
+          <div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a1a00,#3a3a00)"><span style="font-size:36px">🏁</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon">▶</div></div></div>
+          <div class="card-body"><div class="card-category">NASCAR 25</div><div class="card-title">NASCAR 25 Oval Series — Season Opener — Daytona</div><div class="card-meta">85,000 views · Feb 2026</div></div>
+        </div>
+        <div class="broadcast-card">
+          <div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#0a1a2e,#1a3a5e)"><span style="font-size:36px">🌙</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon">▶</div></div></div>
+          <div class="card-body"><div class="card-category">iRacing · Endurance</div><div class="card-title">Le Mans Virtual 2026 — Full 24h Race Broadcast</div><div class="card-meta">2,100,000 views · Jan 2026</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-header-left">
+          <p class="label">What We Do</p>
+          <h2 class="section-title">Our Services</h2>
+        </div>
+        <button class="btn btn-ghost" onclick="showPage('services')">All Services →</button>
+      </div>
+      <div class="card-grid card-grid--3">
+        <div class="service-card">
+          <div class="service-icon">📡</div>
+          <h3>Broadcast Production</h3>
+          <p>Live TV and online streaming coverage for global simracing events, in 8 languages.</p>
+          <ul class="service-features">
+            <li>400+ events per year</li>
+            <li>Eurosport, Sport 1, MotorsTV</li>
+            <li>8 languages: DE, EN, FI, NO, PT, ES, KO, DA</li>
+            <li>100M+ impressions per year</li>
+          </ul>
+          <button class="btn btn-outline btn-sm" onclick="showModal('quote')">Get a Quote</button>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎮</div>
+          <h3>Esports Production</h3>
+          <p>Full-service esports league and championship broadcast production, built for scale.</p>
+          <ul class="service-features">
+            <li>Full league broadcast setup</li>
+            <li>Custom graphics & overlays</li>
+            <li>Commentary & talent management</li>
+            <li>Multi-platform streaming</li>
+          </ul>
+          <button class="btn btn-outline btn-sm" onclick="showModal('quote')">Get a Quote</button>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎬</div>
+          <h3>Live Events & Studio</h3>
+          <p>From modular studio productions to full live event operations, anywhere in the world.</p>
+          <ul class="service-features">
+            <li>Cologne studio facility</li>
+            <li>Modular, customizable setup</li>
+            <li>A/V hardware provision</li>
+            <li>On-site technical support</li>
+          </ul>
+          <button class="btn btn-outline btn-sm" onclick="showModal('quote')">Get a Quote</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:40px">
+        <div class="section-header-left">
+          <p class="label">Trusted By</p>
+          <h2 class="section-title">Partners & Networks</h2>
+        </div>
+      </div>
+      <div class="partners">
+        <span class="partner-logo">Eurosport</span>
+        <span class="partner-logo">Sport 1</span>
+        <span class="partner-logo">MotorsTV</span>
+        <span class="partner-logo">iRacing</span>
+        <span class="partner-logo">Porsche</span>
+        <span class="partner-logo">BMW</span>
+        <span class="partner-logo">Assetto Corsa</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:48px">
+        <div class="section-header-left">
+          <p class="label">Behind the Camera</p>
+          <h2 class="section-title">Meet the Team</h2>
+        </div>
+      </div>
+      <div class="card-grid card-grid--3">
+        <div class="team-card">
+          <div class="team-photo">🧑‍💼</div>
+          <div class="team-name">Philip Stamm</div>
+          <div class="team-role">CEO &amp; Founder</div>
+          <div class="team-bio">Simracing pioneer since 1997. Built Racespot into the world's leading simracing broadcast studio over 10+ years.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-photo">🏆</div>
+          <div class="team-name">Hugo L. C. Marins</div>
+          <div class="team-role">Producer &amp; Co-Founder</div>
+          <div class="team-bio">iRacing World Champion 2011. Combines elite racing knowledge with world-class production expertise.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-photo">📊</div>
+          <div class="team-name">Aaron von Lüpke</div>
+          <div class="team-role">Head of Sales</div>
+          <div class="team-bio">EMM General Manager and sponsorship expert. Builds the partnerships that power Racespot's global reach.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-header-left">
+          <p class="label">Editorial</p>
+          <h2 class="section-title">Latest News</h2>
+        </div>
+        <button class="btn btn-ghost" onclick="showPage('news')">All News →</button>
+      </div>
+      <div class="card-grid card-grid--3">
+        <div class="news-card">
+          <div class="news-thumb">📸</div>
+          <div class="news-body"><div class="news-category">Behind the Scenes</div><div class="news-title">How We Broadcast 400+ Events Per Year — Inside the Racespot Pipeline</div><div class="news-meta">Philip Stamm · Mar 2026 · 8 min read</div></div>
+        </div>
+        <div class="news-card">
+          <div class="news-thumb">🤝</div>
+          <div class="news-body"><div class="news-category">Partnerships</div><div class="news-title">Eurosport Extends Racespot Partnership Through 2027</div><div class="news-meta">Aaron von Lüpke · Feb 2026 · 4 min read</div></div>
+        </div>
+        <div class="news-card">
+          <div class="news-thumb">📈</div>
+          <div class="news-body"><div class="news-category">Industry</div><div class="news-title">Simracing: The World's Fastest Growing Esport — What It Means for Brands</div><div class="news-meta">Hugo Marins · Feb 2026 · 6 min read</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="yellow-line"></div>
+  <!-- FOOTER inserted by JS -->
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: BROADCASTS -->
+<div id="page-broadcasts" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-eyebrow"><span class="label">Portfolio</span></div>
+      <h1>Broadcast<br>Portfolio</h1>
+      <p>400+ broadcasts per year across every major simracing series. From solo YouTube streams to prime-time TV on Eurosport.</p>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-inner">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">iRacing</button>
+      <button class="filter-btn">ACC</button>
+      <button class="filter-btn">F1 24</button>
+      <button class="filter-btn">rFactor 2</button>
+      <button class="filter-btn">NASCAR 25</button>
+      <button class="filter-btn">Esports</button>
+      <button class="filter-btn">TV Broadcasts</button>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="featured-broadcast">
+        <div class="featured-thumb">🌙</div>
+        <div class="featured-content">
+          <p class="label">Featured Broadcast</p>
+          <h2>Le Mans Virtual 2026</h2>
+          <p>Our flagship annual broadcast — 24 continuous hours of live racing coverage from the world's most iconic endurance race, simulated to perfection.</p>
+          <div class="featured-meta">
+            <span>📺 iRacing</span>
+            <span>👁 2.1M Views</span>
+            <span>🌍 5 Languages</span>
+            <span>📅 Jan 2026</span>
+          </div>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-primary btn-sm">▶ Watch</button>
+            <button class="btn btn-outline btn-sm">Case Study →</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-grid card-grid--4">
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a0a2e,#3a1a5e)"><span style="font-size:28px">🏎</span></div><div class="thumb-overlay"></div><div class="thumb-badge"><span class="badge badge-live">Live</span></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">iRacing · GT3</div><div class="card-title" style="font-size:14px">GT3 WC — Round 3</div><div class="card-meta">10.2K watching</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a1a00,#3a3a00)"><span style="font-size:28px">🏁</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">NASCAR 25</div><div class="card-title" style="font-size:14px">Oval Series R1</div><div class="card-meta">85K views</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#0a1a0a,#1a4a1a)"><span style="font-size:28px">🏆</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">F1 24</div><div class="card-title" style="font-size:14px">Formula iRacing WC</div><div class="card-meta">445K views</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#2a0a0a,#5a1a1a)"><span style="font-size:28px">🔴</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">ACC · GT3</div><div class="card-title" style="font-size:14px">Porsche Supercup</div><div class="card-meta">1.2M views</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#0a0a2a,#0a0a5a)"><span style="font-size:28px">💙</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">iRacing</div><div class="card-title" style="font-size:14px">BMW M Power Series</div><div class="card-meta">320K views</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a0a1a,#4a0a4a)"><span style="font-size:28px">🌟</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">rFactor 2</div><div class="card-title" style="font-size:14px">Le Mans Virtual Series</div><div class="card-meta">780K views</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#0a1a1a,#0a4a4a)"><span style="font-size:28px">🌊</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">ACC</div><div class="card-title" style="font-size:14px">SRO Esports Season 3</div><div class="card-meta">560K views</div></div></div>
+        <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a1a1a,#3a3a3a)"><span style="font-size:28px">⚡</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">iRacing</div><div class="card-title" style="font-size:14px">eNASCAR Coca-Cola Series</div><div class="card-meta">1.8M views</div></div></div>
+      </div>
+      <div style="text-align:center;margin-top:36px"><button class="btn btn-outline">Load More Broadcasts</button></div>
+    </div>
+  </section>
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header"><div class="section-header-left"><p class="label">Client Voices</p><h2 class="section-title">Testimonials</h2></div></div>
+      <div class="testimonial">
+        <blockquote>"Racespot has been our production partner for 5 years. Their quality, reliability, and deep understanding of simracing is unmatched. They don't just broadcast events — they elevate them."</blockquote>
+        <div class="testimonial-author"><div class="testimonial-avatar">🏢</div><div><div class="testimonial-name">Client Name</div><div class="testimonial-title">Head of Esports, Major Automotive Brand</div></div></div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-section"><div class="container"><h2>Ready to Broadcast Your Event?</h2><p>Tell us about your project and we'll create a tailored proposal within 48 hours.</p><div class="cta-buttons"><button class="btn btn-primary" onclick="showModal('quote')">Request a Quote</button><button class="btn btn-outline">View Our Services</button></div></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: EVENTS -->
+<div id="page-events" class="page">
+  <section class="hero" style="max-height:600px">
+    <div class="hero-bg" style="background:linear-gradient(135deg,#0a0a0a 0%,#2a1500 50%,#0a0a0a 100%)"></div>
+    <div class="hero-bg-grid"></div>
+    <div class="hero-overlay"></div>
+    <div class="container" style="position:relative;z-index:1">
+      <div class="hero-content">
+        <span class="badge badge-upcoming" style="margin-bottom:20px">08–12 July 2026</span>
+        <h1 class="display-title hero-title" style="font-size:clamp(40px,6vw,72px)">Race Week<br><em>2026</em></h1>
+        <p class="hero-sub">Europe's new festival of virtual motorsport. Esports competition, automotive innovation, and live entertainment — all in one place.</p>
+        <p class="hero-meta">Cologne, Germany · <span>Up to 1,500 guests</span> · Global Broadcast</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="showModal('quote')">Register Interest</button>
+          <button class="btn btn-outline">Partnership Packages</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="stats-bar"><div class="container"><div class="stats-grid">
+    <div class="stat-item"><div class="stat-number">5</div><div class="stat-label">Days of Racing</div></div>
+    <div class="stat-item"><div class="stat-number">1,500</div><div class="stat-label">Guest Capacity</div></div>
+    <div class="stat-item"><div class="stat-number">100+</div><div class="stat-label">Competing Drivers</div></div>
+    <div class="stat-item"><div class="stat-number">Global</div><div class="stat-label">Broadcast Reach</div></div>
+  </div></div></div>
+  <section class="section">
+    <div class="container">
+      <div class="section-header"><div class="section-header-left"><p class="label">Partnership Opportunities</p><h2 class="section-title">Sponsor Race Week 2026</h2></div></div>
+      <div class="card-grid card-grid--3">
+        <div class="service-card"><div class="service-icon">👑</div><h3>Title Sponsor</h3><p>Maximum brand exposure across all Race Week 2026 touchpoints — digital, broadcast, and on-site.</p><ul class="service-features"><li>Naming rights</li><li>Full broadcast integration</li><li>VIP presence on-site</li><li>All digital channels</li></ul><button class="btn btn-primary btn-sm" onclick="showModal('quote')">Enquire</button></div>
+        <div class="service-card"><div class="service-icon">🏎</div><h3>Series Sponsor</h3><p>Branded across a featured racing series, with coverage on broadcast and social channels.</p><ul class="service-features"><li>Series naming rights</li><li>Broadcast graphics</li><li>Social media coverage</li><li>Post-event highlights</li></ul><button class="btn btn-outline btn-sm" onclick="showModal('quote')">Enquire</button></div>
+        <div class="service-card"><div class="service-icon">⭐</div><h3>Brand Partner</h3><p>Targeted presence for brands seeking qualified motorsport and tech-savvy audiences.</p><ul class="service-features"><li>Digital presence</li><li>On-site branding</li><li>Social media mentions</li><li>Content integration</li></ul><button class="btn btn-outline btn-sm" onclick="showModal('quote')">Enquire</button></div>
+      </div>
+    </div>
+  </section>
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header"><div class="section-header-left"><p class="label">Schedule</p><h2 class="section-title">Upcoming Events</h2></div><button class="btn btn-ghost" onclick="showPage('calendar')">Full Calendar →</button></div>
+      <div>
+        <div class="event-list-item">
+          <div class="event-date-box"><div class="event-date-day">8</div><div class="event-date-month">Mar</div></div>
+          <div class="event-info"><h3>iRacing GT3 World Championship — Round 3</h3><p>Monza Circuit · 20:00 CET · English / German · iRacing</p></div>
+          <div><span class="badge badge-live">Live Now</span></div>
+        </div>
+        <div class="event-list-item">
+          <div class="event-date-box"><div class="event-date-day">13</div><div class="event-date-month">Mar</div></div>
+          <div class="event-info"><h3>NASCAR 25 Oval Series — Round 2</h3><p>Talladega Superspeedway · 18:00 CET · English · NASCAR 25</p></div>
+          <div><button class="btn btn-outline btn-sm">Set Reminder</button></div>
+        </div>
+        <div class="event-list-item">
+          <div class="event-date-box"><div class="event-date-day">15</div><div class="event-date-month">Mar</div></div>
+          <div class="event-info"><h3>iRacing GT3 World Championship — Round 4</h3><p>Spa-Francorchamps · 20:00 CET · English / German · iRacing</p></div>
+          <div><button class="btn btn-outline btn-sm">Set Reminder</button></div>
+        </div>
+        <div class="event-list-item">
+          <div class="event-date-box"><div class="event-date-day">5</div><div class="event-date-month">Apr</div></div>
+          <div class="event-info"><h3>Le Mans Virtual Prologue 2026</h3><p>Le Mans Circuit · 14:00 CET · Multi-language · iRacing</p></div>
+          <div><button class="btn btn-outline btn-sm">Set Reminder</button></div>
+        </div>
+        <div class="event-list-item" style="border-bottom:none">
+          <div class="event-date-box" style="background:rgba(245,192,0,0.1);border-color:var(--yellow)"><div class="event-date-day" style="color:var(--yellow)">8</div><div class="event-date-month">Jul</div></div>
+          <div class="event-info"><h3>RACE WEEK 2026 — Festival Opens</h3><p>Cologne, Germany · 08–12 July 2026 · Up to 1,500 guests</p></div>
+          <div><button class="btn btn-primary btn-sm" onclick="showModal('quote')">Register</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: SERVICES -->
+<div id="page-services" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-eyebrow"><span class="label">What We Offer</span></div>
+      <h1>World-Class Broadcast<br>Production for Simracing</h1>
+      <p>From concept to global TV broadcast. We've produced 400+ events per year for a decade — we know exactly what it takes.</p>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="services-feature">
+        <div class="services-feature-content">
+          <p class="label">01 — Core Service</p>
+          <h2>Broadcast Production</h2>
+          <p>Professional live TV and online streaming coverage for global simracing events. We handle every aspect of production, from camera work and graphics to commentary and post-production.</p>
+          <ul class="check-list">
+            <li>400+ events per year, every major series</li>
+            <li>Coverage in 8 languages (DE, EN, FI, NO, PT, ES, KO, DA)</li>
+            <li>TV partnerships: Eurosport, Sport 1, MotorsTV</li>
+            <li>100M+ impressions per year</li>
+            <li>2.5M+ YouTube views on our channel</li>
+            <li>Multi-sim coverage (iRacing, ACC, rFactor 2, F1 24…)</li>
+          </ul>
+          <button class="btn btn-primary" onclick="showModal('quote')">Request a Broadcast Quote</button>
+        </div>
+        <div class="services-feature-visual">📡</div>
+      </div>
+      <div class="services-feature reverse">
+        <div class="services-feature-content">
+          <p class="label">02 — Esports</p>
+          <h2>Esports Production</h2>
+          <p>Full-service esports league and championship broadcast production. We build the production infrastructure that makes your league look world-class from day one.</p>
+          <ul class="check-list">
+            <li>League broadcast setup and management</li>
+            <li>Custom graphics packages and overlays</li>
+            <li>Commentary and talent coordination</li>
+            <li>Multi-platform streaming (YouTube, Twitch, etc.)</li>
+            <li>Highlight reels and post-production</li>
+            <li>Data-driven viewer engagement tools</li>
+          </ul>
+          <button class="btn btn-primary" onclick="showModal('quote')">Request an Esports Quote</button>
+        </div>
+        <div class="services-feature-visual">🎮</div>
+      </div>
+      <div class="services-feature">
+        <div class="services-feature-content">
+          <p class="label">03 — Live &amp; Studio</p>
+          <h2>Live Events &amp; Studio</h2>
+          <p>From our modular studio in Cologne to full-scale live event operations, we provide everything needed to make your event a production-grade success.</p>
+          <ul class="check-list">
+            <li>Cologne studio — modular and fully customizable</li>
+            <li>Full A/V hardware provision and setup</li>
+            <li>On-site technical support team</li>
+            <li>Complete logistics management</li>
+            <li>Hardware event support worldwide</li>
+            <li>Integration with RACE WEEK 2026 infrastructure</li>
+          </ul>
+          <button class="btn btn-primary" onclick="showModal('quote')">Request a Studio Quote</button>
+        </div>
+        <div class="services-feature-visual">🎬</div>
+      </div>
+    </div>
+  </section>
+  <div class="cta-section"><div class="container"><h2>Let's Build Something <em style="font-style:normal;color:var(--yellow)">Together</em></h2><p>Get a tailored proposal for your broadcast, esports league, or live event within 48 hours.</p><div class="cta-buttons"><button class="btn btn-primary" onclick="showModal('quote')">Request a Quote</button><button class="btn btn-outline" onclick="showPage('broadcasts')">View Our Work</button></div></div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: CALENDAR -->
+<div id="page-calendar" class="page">
+  <section class="section">
+    <div class="container">
+      <div style="margin-bottom:32px">
+        <p class="label" style="margin-bottom:8px">Schedule</p>
+        <h1 class="section-title" style="font-size:clamp(28px,4vw,42px)">Broadcast Calendar</h1>
+        <p style="color:var(--muted);font-size:14px;margin-top:8px">All upcoming Racespot broadcasts. Synced live from our schedule.</p>
+      </div>
+      <div class="calendar-header">
+        <div class="cal-nav">
+          <button class="cal-nav-btn">←</button>
+          <span class="cal-month">March 2026</span>
+          <button class="cal-nav-btn">→</button>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="view-toggle">
+            <button class="view-btn active">Month</button>
+            <button class="view-btn">Week</button>
+            <button class="view-btn">List</button>
+          </div>
+          <button class="btn btn-outline btn-sm">Today</button>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="filter-btn active" style="padding:8px 14px;border:1px solid var(--border);border-radius:4px;background:var(--s2)">All Series</button>
+        <button class="filter-btn" style="padding:8px 14px;border:1px solid var(--border);border-radius:4px;background:var(--s2)">iRacing</button>
+        <button class="filter-btn" style="padding:8px 14px;border:1px solid var(--border);border-radius:4px;background:var(--s2)">ACC</button>
+        <button class="filter-btn" style="padding:8px 14px;border:1px solid var(--border);border-radius:4px;background:var(--s2)">NASCAR 25</button>
+        <button class="filter-btn live-link" style="padding:8px 14px;border:1px solid rgba(229,62,62,.4);border-radius:4px;background:rgba(229,62,62,.1);color:var(--live)">● Live Now</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-day-header">Mon</div><div class="cal-day-header">Tue</div><div class="cal-day-header">Wed</div><div class="cal-day-header">Thu</div><div class="cal-day-header">Fri</div><div class="cal-day-header">Sat</div><div class="cal-day-header">Sun</div>
+        <!-- Row 1: Mar 1 is Sunday, so Mon 2 starts -->
+        <div class="cal-cell cal-cell--empty"></div>
+        <div class="cal-cell cal-cell--empty"></div>
+        <div class="cal-cell cal-cell--empty"></div>
+        <div class="cal-cell cal-cell--empty"></div>
+        <div class="cal-cell cal-cell--empty"></div>
+        <div class="cal-cell cal-cell--empty"><div class="cal-num">1</div></div>
+        <div class="cal-cell"><div class="cal-num">2</div></div>
+        <!-- Row 2 -->
+        <div class="cal-cell"><div class="cal-num">3</div></div>
+        <div class="cal-cell"><div class="cal-num">4</div></div>
+        <div class="cal-cell"><div class="cal-num">5</div></div>
+        <div class="cal-cell"><div class="cal-num">6</div></div>
+        <div class="cal-cell"><div class="cal-num">7</div></div>
+        <div class="cal-cell cal-cell--today"><div class="cal-num">8</div><div class="cal-event live" onclick="showModal('event')">● GT3 R3 20:00</div></div>
+        <div class="cal-cell"><div class="cal-num">9</div></div>
+        <!-- Row 3 -->
+        <div class="cal-cell"><div class="cal-num">10</div></div>
+        <div class="cal-cell"><div class="cal-num">11</div></div>
+        <div class="cal-cell"><div class="cal-num">12</div></div>
+        <div class="cal-cell"><div class="cal-num">13</div><div class="cal-event" onclick="showModal('event')">NASCAR R2 18:00</div></div>
+        <div class="cal-cell"><div class="cal-num">14</div></div>
+        <div class="cal-cell"><div class="cal-num">15</div><div class="cal-event" onclick="showModal('event')">GT3 R4 20:00</div></div>
+        <div class="cal-cell"><div class="cal-num">16</div></div>
+        <!-- Row 4 -->
+        <div class="cal-cell"><div class="cal-num">17</div></div>
+        <div class="cal-cell"><div class="cal-num">18</div></div>
+        <div class="cal-cell"><div class="cal-num">19</div></div>
+        <div class="cal-cell"><div class="cal-num">20</div><div class="cal-event" onclick="showModal('event')">NASCAR R3 18:00</div></div>
+        <div class="cal-cell"><div class="cal-num">21</div></div>
+        <div class="cal-cell"><div class="cal-num">22</div><div class="cal-event" onclick="showModal('event')">GT3 R5 20:00</div></div>
+        <div class="cal-cell"><div class="cal-num">23</div></div>
+        <!-- Row 5 -->
+        <div class="cal-cell"><div class="cal-num">24</div></div>
+        <div class="cal-cell"><div class="cal-num">25</div></div>
+        <div class="cal-cell"><div class="cal-num">26</div></div>
+        <div class="cal-cell"><div class="cal-num">27</div><div class="cal-event" onclick="showModal('event')">NASCAR R4 18:00</div></div>
+        <div class="cal-cell"><div class="cal-num">28</div></div>
+        <div class="cal-cell"><div class="cal-num">29</div></div>
+        <div class="cal-cell"><div class="cal-num">30</div></div>
+        <!-- Row 6 -->
+        <div class="cal-cell" style="border-bottom:none"><div class="cal-num">31</div></div>
+        <div class="cal-cell cal-cell--empty" style="border-bottom:none"></div>
+        <div class="cal-cell cal-cell--empty" style="border-bottom:none"></div>
+        <div class="cal-cell cal-cell--empty" style="border-bottom:none"></div>
+        <div class="cal-cell cal-cell--empty" style="border-bottom:none"></div>
+        <div class="cal-cell cal-cell--empty" style="border-bottom:none"></div>
+        <div class="cal-cell cal-cell--empty" style="border-bottom:none"></div>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:12px;align-items:center">
+        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;background:rgba(229,62,62,.5);border-radius:2px;display:inline-block"></span> Live / Airing Now</span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)"><span style="width:10px;height:10px;background:rgba(245,192,0,.15);border-radius:2px;display:inline-block"></span> Upcoming Broadcast</span>
+      </div>
+      <div style="margin-top:32px;padding-top:32px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm">+ Subscribe to Google Calendar</button>
+        <button class="btn btn-ghost btn-sm">Download .ics</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: LIVE -->
+<div id="page-live" class="page">
+  <section class="section">
+    <div class="container">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+        <div><p class="label" style="margin-bottom:6px">Now Streaming</p><h1 class="section-title" style="font-size:clamp(24px,3.5vw,36px)">Live Broadcasts</h1></div>
+        <span class="badge badge-live" style="font-size:13px;padding:8px 16px">1 Stream Live</span>
+      </div>
+      <div class="live-player">
+        <div class="live-embed">
+          <div style="position:absolute;top:12px;left:12px"><span class="badge badge-live">Live</span></div>
+          <div class="live-embed-placeholder">
+            <div style="font-size:64px;margin-bottom:16px">📺</div>
+            <h3>iRacing GT3 World Championship</h3>
+            <p style="margin-bottom:20px">Round 3 — Monza Circuit — 10,243 watching</p>
+            <button class="btn btn-primary">▶ Watch on YouTube</button>
+            <p style="font-size:12px;color:var(--muted);margin-top:12px">Live embed will appear here (YouTube API)</p>
+          </div>
+        </div>
+        <div class="live-info">
+          <div class="live-title">
+            <h2>iRacing GT3 World Championship — Round 3</h2>
+            <p>Monza Circuit · Saturday 8 March 2026 · English / German commentary</p>
+          </div>
+          <div class="live-actions">
+            <button class="btn btn-outline btn-sm">↗ Open YouTube</button>
+            <button class="btn btn-ghost btn-sm">Share</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:48px">
+        <div class="section-header"><div class="section-header-left"><p class="label">Recent</p><h2 class="section-title" style="font-size:24px">Recent Broadcasts</h2></div><button class="btn btn-ghost" onclick="showPage('broadcasts')">All Broadcasts →</button></div>
+        <div class="card-grid card-grid--4">
+          <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a0a2e,#3a1a5e)"><span style="font-size:28px">🏎</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">iRacing · GT3</div><div class="card-title" style="font-size:14px">GT3 WC Round 2</div><div class="card-meta">Mar 1 · 95K views</div></div></div>
+          <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a1a00,#3a3a00)"><span style="font-size:28px">🏁</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">NASCAR 25</div><div class="card-title" style="font-size:14px">Oval Series R1</div><div class="card-meta">Feb 27 · 85K views</div></div></div>
+          <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#0a1a2e,#1a3a5e)"><span style="font-size:28px">🌙</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">iRacing · Endurance</div><div class="card-title" style="font-size:14px">Le Mans Virtual 24h</div><div class="card-meta">Jan 18 · 2.1M views</div></div></div>
+          <div class="broadcast-card"><div class="thumb"><div class="thumb-bg" style="background:linear-gradient(135deg,#1a0a1a,#4a0a4a)"><span style="font-size:28px">🌟</span></div><div class="thumb-overlay"></div><div class="thumb-play"><div class="play-icon" style="width:36px;height:36px;font-size:14px">▶</div></div></div><div class="card-body"><div class="card-category">rFactor 2</div><div class="card-title" style="font-size:14px">Le Mans Virtual Series</div><div class="card-meta">Jan 12 · 780K views</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ PAGE: NEWS -->
+<div id="page-news" class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-eyebrow"><span class="label">Editorial</span></div>
+      <h1>Racespot News</h1>
+      <p>Insights, partnerships, and behind-the-scenes stories from the world's leading simracing broadcast studio.</p>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-inner">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Industry</button>
+      <button class="filter-btn">Partnerships</button>
+      <button class="filter-btn">Behind the Scenes</button>
+      <button class="filter-btn">Events</button>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="news-featured">
+        <div class="news-featured-thumb">📸</div>
+        <div class="news-featured-content">
+          <p class="label">Featured</p>
+          <div class="news-category" style="margin-bottom:8px">Behind the Scenes</div>
+          <h2>How We Broadcast 400+ Events Per Year</h2>
+          <p>A look inside the Racespot studio and production pipeline — from pre-production planning to the moment we hit "go live" for 10,000+ viewers.</p>
+          <p class="news-featured-meta">By Philip Stamm · March 2026 · 8 min read</p>
+          <button class="btn btn-primary btn-sm" style="margin-top:20px">Read Article →</button>
+        </div>
+      </div>
+      <div class="section-header" style="margin-bottom:24px"><div class="section-header-left"><p class="label">Latest</p><h2 class="section-title" style="font-size:24px">All Articles</h2></div></div>
+      <div class="card-grid card-grid--3">
+        <div class="news-card"><div class="news-thumb">🤝</div><div class="news-body"><div class="news-category">Partnerships</div><div class="news-title">Eurosport Extends Racespot Partnership Through 2027</div><div class="news-meta">Aaron von Lüpke · Feb 2026 · 4 min</div></div></div>
+        <div class="news-card"><div class="news-thumb">📈</div><div class="news-body"><div class="news-category">Industry</div><div class="news-title">Simracing: The World's Fastest Growing Esport — What It Means for Brands</div><div class="news-meta">Hugo Marins · Feb 2026 · 6 min</div></div></div>
+        <div class="news-card"><div class="news-thumb">🏟</div><div class="news-body"><div class="news-category">Events</div><div class="news-title">RACE WEEK 2026: What to Expect at Europe's Biggest Simracing Festival</div><div class="news-meta">Aaron von Lüpke · Jan 2026 · 5 min</div></div></div>
+        <div class="news-card"><div class="news-thumb">🎬</div><div class="news-body"><div class="news-category">Behind the Scenes</div><div class="news-title">Inside the Cologne Studio: A Tour of Where We Make the Magic Happen</div><div class="news-meta">Philip Stamm · Jan 2026 · 7 min</div></div></div>
+        <div class="news-card"><div class="news-thumb">🌍</div><div class="news-body"><div class="news-category">Industry</div><div class="news-title">Broadcasting in 8 Languages: How Racespot Reaches the Global Simracing Audience</div><div class="news-meta">Hugo Marins · Dec 2025 · 5 min</div></div></div>
+        <div class="news-card"><div class="news-thumb">🏆</div><div class="news-body"><div class="news-category">Events</div><div class="news-title">Le Mans Virtual 2026: Record 2.1 Million Views for Our Annual 24h Broadcast</div><div class="news-meta">Philip Stamm · Jan 2026 · 3 min</div></div></div>
+      </div>
+      <div style="text-align:center;margin-top:36px"><button class="btn btn-outline">Load More Articles</button></div>
+      <div style="background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:40px;text-align:center;margin-top:60px">
+        <p class="label" style="margin-bottom:8px">Newsletter</p>
+        <h3 class="section-title" style="font-size:22px;margin-bottom:8px">Stay Updated</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:24px">Get the latest news, broadcast schedules, and behind-the-scenes stories in your inbox.</p>
+        <div style="display:flex;gap:12px;max-width:420px;margin:0 auto">
+          <input type="email" placeholder="your@email.com" style="flex:1;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;color:var(--white);font-family:var(--font-body);font-size:14px">
+          <button class="btn btn-primary">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ FOOTER (shared) -->
+<footer class="footer" id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo" style="font-size:20px;cursor:default">RACE<span style="color:var(--yellow)">▶</span>SPOT</div>
+        <p>The world's leading simracing broadcast studio. Based in Cologne, Germany. Broadcasting globally since 2013.</p>
+        <div class="social-links">
+          <a class="social-link" title="YouTube">▶</a>
+          <a class="social-link" title="Twitch">📺</a>
+          <a class="social-link" title="Instagram">📷</a>
+          <a class="social-link" title="LinkedIn">in</a>
+          <a class="social-link" title="X / Twitter">𝕏</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Broadcasts</h4><ul><li><a onclick="showPage('broadcasts')">Portfolio</a></li><li><a onclick="showPage('live')">Live Streams</a></li><li><a onclick="showPage('calendar')">Schedule</a></li><li><a>Archive</a></li></ul></div>
+      <div class="footer-col"><h4>Services</h4><ul><li><a onclick="showPage('services')">Broadcast Prod.</a></li><li><a onclick="showPage('services')">Esports</a></li><li><a onclick="showPage('services')">Live Events</a></li><li><a onclick="showModal('quote')">Get a Quote</a></li></ul></div>
+      <div class="footer-col"><h4>Events</h4><ul><li><a onclick="showPage('events')">Race Week 2026</a></li><li><a onclick="showPage('calendar')">Calendar</a></li><li><a onclick="showPage('events')">Past Events</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a>About Us</a></li><li><a>Team</a></li><li><a onclick="showPage('news')">News</a></li><li><a>Contact</a></li><li><a>Imprint</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Racespot GmbH · Cologne, Germany</p>
+      <p style="color:var(--muted);font-size:12px">Privacy Policy · Terms · Imprint</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════ MODALS -->
+<div id="modal-quote" class="modal-backdrop hidden" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeAllModals()">✕</button>
+    <p class="label" style="margin-bottom:8px">Get in Touch</p>
+    <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;text-transform:uppercase;margin-bottom:24px;color:var(--white)">Request a Quote</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Name *</label><input type="text" placeholder="Your name"></div>
+      <div class="form-group"><label>Company *</label><input type="text" placeholder="Company name"></div>
+      <div class="form-group full"><label>Email *</label><input type="email" placeholder="your@email.com"></div>
+      <div class="form-group full"><label>Service</label><select><option>Select a service...</option><option>Broadcast Production</option><option>Esports Production</option><option>Live Event / Studio</option><option>Race Week 2026 Partnership</option></select></div>
+      <div class="form-group full"><label>Message</label><textarea placeholder="Tell us about your project..."></textarea></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center">Send Request →</button>
+  </div>
+</div>
+
+<div id="modal-event" class="modal-backdrop hidden" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeAllModals()">✕</button>
+    <span class="badge badge-live" style="margin-bottom:16px">Live Now</span>
+    <h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;text-transform:uppercase;margin-bottom:6px;color:var(--white)">iRacing GT3 World Championship</h2>
+    <p style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--yellow);margin-bottom:20px">Round 3 — Monza Circuit</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+      <div style="background:var(--s2);border-radius:var(--radius);padding:14px"><div style="font-family:var(--font-display);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Date & Time</div><div style="font-size:14px;color:var(--white)">Sat 8 Mar · 20:00 CET</div></div>
+      <div style="background:var(--s2);border-radius:var(--radius);padding:14px"><div style="font-family:var(--font-display);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Platform</div><div style="font-size:14px;color:var(--white)">iRacing</div></div>
+      <div style="background:var(--s2);border-radius:var(--radius);padding:14px"><div style="font-family:var(--font-display);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Language</div><div style="font-size:14px;color:var(--white)">English / German</div></div>
+      <div style="background:var(--s2);border-radius:var(--radius);padding:14px"><div style="font-family:var(--font-display);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Watching Now</div><div style="font-size:14px;color:var(--live)">10,243</div></div>
+    </div>
+    <div style="display:flex;gap:12px">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="showPage('live');closeAllModals()">▶ Watch Live</button>
+      <button class="btn btn-outline btn-sm">+ Calendar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── PAGE NAVIGATION ──────────────────────────────────
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const page = document.getElementById('page-' + id);
+    if (page) page.classList.add('active');
+    const navLink = document.getElementById('nav-' + id);
+    if (navLink) navLink.classList.add('active');
+    // Move footer inside active page
+    const footer = document.getElementById('footer');
+    if (page && footer) page.appendChild(footer);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── MODALS ───────────────────────────────────────────
+  function showModal(id) {
+    closeAllModals();
+    const m = document.getElementById('modal-' + id);
+    if (m) { m.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+  }
+  function closeAllModals() {
+    document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.add('hidden'));
+    document.body.style.overflow = '';
+  }
+  function closeModal(e) {
+    if (e.target.classList.contains('modal-backdrop')) closeAllModals();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllModals(); });
+
+  // ── LANG TOGGLE ──────────────────────────────────────
+  function setLang(lang) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  }
+
+  // ── FILTER BUTTONS ───────────────────────────────────
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const parent = this.closest('.filter-bar, div');
+      parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // ── COUNTDOWN TO RACE WEEK 2026 (8 July 2026) ────────
+  function updateCountdown() {
+    const target = new Date('2026-07-08T10:00:00+02:00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) return;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    const el = id => document.getElementById(id);
+    if (el('cd-days'))  el('cd-days').textContent  = days;
+    if (el('cd-hours')) el('cd-hours').textContent = pad(hours);
+    if (el('cd-mins'))  el('cd-mins').textContent  = pad(mins);
+    if (el('cd-secs'))  el('cd-secs').textContent  = pad(secs);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ── VIEW TOGGLE (calendar) ───────────────────────────
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.view-toggle').querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
